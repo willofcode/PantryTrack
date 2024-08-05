@@ -6,9 +6,9 @@ import { initializeApp } from "firebase/app";
 // Your web app's Firebase configuration
 const firebaseConfig = {
   'apiKey': process.env.FIREBASE_API_KEY,
-  authDomain: "hspantrytrack.firebaseapp.com",
-  projectId: "hspantrytrack",
-  storageBucket: "hspantrytrack.appspot.com",
+  'authDomain': process.env.FIREBASE_AUTH_DOMAIN,
+  'projectId': process.env.FIREBASE_PROJECT_ID,
+'  storageBucket': process.env.FIREBASE_STORAGE_BUCKET,
   messagingSenderId: "616803325185",
   appId: "1:616803325185:web:22a692fe04cfdcda367700"
 };
