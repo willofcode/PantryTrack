@@ -1,5 +1,9 @@
-import { Box, Stack } from "@mui/material";
-import { Typography } from "@mui/material";
+"use client";
+
+import { Box, Stack, Typography } from "@mui/material";
+import { firebase } from '@/firebase';
+import { collection, query, getDocs } from "firebase/firestore";
+import { useEffect } from "react";
 
 const item = [
   'tomato',
@@ -274,6 +278,17 @@ const item = [
   'belgian ale', 
 ]
 export default function Home() {
+  useEffect(() => {
+    const updatePantry = async () => {
+      const snapshot = query(collection(firebase, "pantry"));
+      const docs = await getDocs(snapshot);
+      docs.forEach((doc) => {
+        console.log(doc.id, doc.data());
+      })
+    }
+    updatePantry();
+  }, [])
+
   return (
     <Box
       width= "100vw"
