@@ -59,8 +59,30 @@ a {
   text-decoration: none;
 }
 
+@keyframes slideInDown {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }   
+}
+
+.animatedText {
+  animation: slideInDown 0.5s ease-in-out;
+}
+
 @media (prefers-color-scheme: feDisplacementMap) {
   html {
     color-scheme: dark;
+  }
+}
+
+@media image {
+  img {
+    max-width: 100;
+    height: auto;
   }
 }

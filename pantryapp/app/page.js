@@ -1,190 +1,93 @@
-"use client"
-import { useState, useEffect } from 'react';
-import { firestore } from '../firebase';
-import { Box, Modal, Typography, Stack, TextField, Button } from "@mui/material";
-import { collection, query, getDocs, doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
+import { Inter } from 'next/font/google';
+import {Box, Button, Typography, Stack} from '@mui/material'
+import Image from 'next/image'
+import Link from 'next/link'
+import "../app/globals.css"
+import {redirect} from 'next/navigation'
 
 export default function Home() {
-  const [inventory, setInventory] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [itemName, setItemName] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+//   const {userId} = auth()
 
-  const updateInventory = async () => {
-      const snapshot = query(collection(firestore, 'pantry'));
-      const docs = await getDocs(snapshot);
-      const inventoryList = [];
-      docs.forEach((doc) => {
-        inventoryList.push(doc.id, doc.data())
-      });
-      useEffect(() => {
-        setInventory(inventoryList);
-      });
-    };
-
-  const addItem = async (item) => {
-    const docRef = doc(collection(firestore, 'pantry'), item);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      const { quantity } = docSnap.data();
-      await setDoc(docRef, { quantity: quantity + 1 });
-    } else {
-      await setDoc(docRef, { quantity: 1 });
-    }
-    await updateInventory();
-  };
-
-  const removeItem = async (item) => {
-    const docRef = doc(collection(firestore, 'pantry'), item);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      const { quantity } = docSnap.data();
-      if (quantity === 1) {
-        await deleteDoc(docRef);
-      } else {
-        await setDoc(docRef, { quantity: quantity - 1 });
-      }
-    }
-    await updateInventory();
-  };
-
-  useEffect(() => {
-    updateInventory();
-  }, []);
-
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const filteredInventory = inventory.filter(({ name }) =>
-    name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
+//   if (userId) {
+//     redirect('/main')
+//   }
   return (
     <Box
-      fullWidth  // add new item button
       height="100vh"
+      width="100vw"
       display="flex"
       flexDirection="column"
-      justifyContent="space-between"
-      alignItems="left"
-      gap={2}
+      justifyContent="center"
+      alignItems="center"
+      sx={{backgroundImage: 'linear-gradient(to right, #ff6e7f, #bfe9ff)'}}
+      position="relative"
     >
-      <Modal open={open} onClose={handleClose}>
+      <Image
+        priority={true}
+        src="/home.jpg"
+        alt="window "
+        display="flex"
+        media="screen"
+        layout="fill"
+        objectFit="cover"
+      />{' '}
+      <Box
+        position="absolute"
+        width="100vw"
+        height="100vh"
+        sx={{
+          backgroundImage:
+            'linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5))',
+        }}
+      >
+        {' '}
         <Box
-          position="absolute" // add new item pop up
-          top="50%"
-          left="50%"
-          width={400}
-          bgcolor="white"
-          border="2px solid #000"
-          boxShadow={24}
-          padding={4}
           display="flex"
           flexDirection="column"
-          gap={3}
-          sx={{
-            transform: "translate(-50%, -50%)"
-          }}
+          position="absolute"
+          color="primary.main"
+          alignItems="left"
+          width="100vw"
+          background="rgba(255, 255, 255, 0.8)"
         >
-          <Typography variant="h6">Add Item</Typography>
-          <Stack width="100%" direction="row" spacing={2}>
-            <TextField
-              variant="outlined" // add new item pop up
-              value={itemName}
-              onChange={(e) => {
-                setItemName(e.target.value);
-              }}
-            />
-            <Button variant="outlined" onClick={() => {
-              addItem(itemName);
-              setItemName('');
-              handleClose();
-            }}
-            >Add</Button>
-          </Stack>
-        </Box>
-      </Modal>
-
-      <Box fullWidth height="800" overflow="auto">
-        <Box
-          fullWidth  // "inventory items" box
-          height="100px"
-          bgcolor="#ADD8E6"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          sx={{ marginBottom: 2 }}
-        >
-          <Typography variant="h2" color="#333">
-            Inventory Items
+          <Typography
+            variant="h2"
+            margin={5}
+            paddingTop={20}
+            justifyContent={'center'}
+            color="white"
+            fontFamily={'Inter'}
+            fontWeight="semi"
+            animation="animatedText"
+          >
+            Pantry Track
+          </Typography>
+          <Typography variant="h6" margin={5} color="white">
+            Track your pantry inventory seamlessly and efficiently today!
           </Typography>
         </Box>
-        <TextField
-          variant="outlined" // search bar          
-          label="Search Items"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <Stack width="100%" height="100%" spacing={2}>
-          {filteredInventory.map(({ name, quantity }) => (
-            <Box
-              key={name} // item display
-              width="100%"
-              minHeight="150px"
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              bgColor="#f0f0f0"
-              padding={5}
-            >
-              <Typography
-                variant="h4"
-                color="#333"
-                textAlign="center"
-              >
-                {name.charAt(0).toUpperCase() + name.slice(1)}
-              </Typography>
-              <Typography
-                variant="h4"
-                color="#333"
-                textAlign="center"
-              >
-                {quantity}
-              </Typography>
-              <Stack direction="row" spacing={2}>
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    addItem(name);
-                  }}
-                >
-                  Add
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    removeItem(name);
-                  }}
-                >
-                  Remove
-                </Button>
-              </Stack>
-            </Box>
-          ))}
-        </Stack>
       </Box>
-
-      <Button
-        variant="contained"
-        onClick={() => {
-          handleOpen();
+      <Stack
+        direction="row"
+        spacing={2}
+        alignItems="center"
+        justifyContent="flex-end"
+        sx={{
+          position: 'absolute',
+          top: 10,
+          right: 10,
         }}
-        sx={{ margin: 2 }} // Optional margin for spacing
       >
-        Add New Item
-      </Button>
+        <Link href="/tracker" passHref>
+          <Button variant="contained">Demo</Button>
+        </Link>
+        <Link href="/main" passHref>
+          <Button variant="contained">Sign In</Button>
+        </Link>
+        <Link href="/sign-up" passHref>
+          <Button variant="contained">Sign Up</Button>
+        </Link>
+      </Stack>{' '}
     </Box>
-  );
+  )
 }
