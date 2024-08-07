@@ -24,7 +24,7 @@ export default function Home() {
     >
       <Image
         priority={true}
-        src="/home.jpg"
+        src="/landingpage.jpg"
         alt="window "
         display="flex"
         media="screen"
@@ -45,24 +45,24 @@ export default function Home() {
           display="flex"
           flexDirection="column"
           position="absolute"
-          color="primary.main"
-          alignItems="left"
+          color="primary.white"
+          alignItems="center"
           width="100vw"
           background="rgba(255, 255, 255, 0.8)"
         >
           <Typography
             variant="h2"
             margin={5}
-            paddingTop={20}
+            paddingTop={10}
             justifyContent={'center'}
             color="white"
             fontFamily={'Inter'}
-            fontWeight="semi"
+            fontWeight="bold"
             animation="animatedText"
           >
             Pantry Track
           </Typography>
-          <Typography variant="h6" margin={5} color="white">
+          <Typography variant="h6" marginBottom={5} color="white">
             Track your pantry inventory seamlessly and efficiently today!
           </Typography>
         </Box>
@@ -78,14 +78,20 @@ export default function Home() {
           right: 10,
         }}
       >
-        <Link href="/tracker" passHref>
-          <Button variant="contained">Demo</Button>
+        <Link href="/section/tracker" passHref>
+          <Button variant="contained">
+            Demo
+          </Button>
         </Link>
-        <Link href="/main" passHref>
-          <Button variant="contained">Sign In</Button>
+        <Link href="/section/sign-in" passHref>
+          <Button variant="contained">
+            Sign In
+          </Button>
         </Link>
-        <Link href="/sign-up" passHref>
-          <Button variant="contained">Sign Up</Button>
+        <Link href="/section/sign-up" passHref>
+          <Button variant="contained">
+            Sign Up
+          </Button>
         </Link>
       </Stack>{' '}
     </Box>

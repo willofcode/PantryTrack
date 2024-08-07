@@ -1,7 +1,23 @@
-"use client"
+"use client";
+
 import { useState, useEffect } from 'react';
-import { firestore } from '../../firebase';
-import { Box, Modal, Typography, Stack, TextField, Button } from "@mui/material";
+import { firestore } from '@/firebase';
+import { 
+  Box, 
+  Modal, 
+  Typography, 
+  Stack, 
+  TextField, 
+  Button,
+  Container,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import { collection, query, getDocs, doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 
 export default function InventoryTracker() {
@@ -42,7 +58,14 @@ export default function InventoryTracker() {
     if (docSnap.exists()) {
       const { quantity } = docSnap.data();
       if (quantity === 1) {
-        await deleteDoc(docRef);
+        await setDoc(docRef, { quantity: 0 });
+      }
+      else if (quantity === 0) {
+        if (window.confirm(`Are you sure you want to delete ${item}?`)) {
+          await deleteDoc(docRef);
+        } else {
+          return;
+        }
       } else {
         await setDoc(docRef, { quantity: quantity - 1 });
       }
@@ -63,7 +86,7 @@ export default function InventoryTracker() {
 
   return (
     <Box
-      fullWidth  // add new item button
+      fullWidth  
       height="100vh"
       display="flex"
       flexDirection="column"
@@ -73,12 +96,13 @@ export default function InventoryTracker() {
     >
       <Modal open={open} onClose={handleClose}>
         <Box
-          position="absolute" // add new item pop up
+          position="absolute" 
           top="50%"
           left="50%"
           width={400}
           bgcolor="white"
-          border="2px solid #000"
+          border="1px solid #333"
+          borderRadius={4}
           boxShadow={24}
           padding={4}
           display="flex"
@@ -98,7 +122,7 @@ export default function InventoryTracker() {
                 setItemName(e.target.value);
               }}
             />
-            <Button variant="outlined" onClick={() => {
+            <Button variant="outlined"  onClick={() => {
               addItem(itemName);
               setItemName('');
               handleClose();
@@ -108,7 +132,7 @@ export default function InventoryTracker() {
         </Box>
       </Modal>
 
-      <Box fullWidth height="800" overflow="auto">
+      <Box fullWidth height="800" overflow={"auto"}>
         <Box
           fullWidth  // "inventory items" box
           height="100px"
@@ -118,73 +142,59 @@ export default function InventoryTracker() {
           justifyContent="center"
           sx={{ marginBottom: 2 }}
         >
-          <Typography variant="h2" color="#333">
+          <Typography variant="h4" color="#333" >
             Inventory Items
           </Typography>
         </Box>
-        <TextField
-          fullWidth
-          variant="outlined" // search bar          
+    <Container maxWidth="md">
+    <Box display="flex" paddingY={2}>
+      <Typography variant="h4" component="h1" sx={{ marginRight: 'auto' }} >
+        Inventory List
+      </Typography>
+      <TextField
+          width={100}
+          align="right"
+          size='small'
+          variant="filled"        
           label="Search Items"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <Stack width="100vw" height="100vh" spacing={2}>
-          {filteredInventory.map(({ name, quantity }) => (
-            <Box
-              key={name} // item display
-              width="100%"
-              minHeight="150px"
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              bgColor="#f0f0f0"
-              padding={5}
-            >
-              <Typography
-                variant="h4"
-                color="#333"
-                textAlign="center"
-              >
-                {name.charAt(0).toUpperCase() + name.slice(1)}
-              </Typography>
-              <Typography
-                variant="h4"
-                color="#333"
-                textAlign="center"
-              >
-                {quantity}
-              </Typography>
-              <Stack direction="row" spacing={2}>
-                <Button
-                  rounded="true"
-                  variant="contained"
-                  onClick={() => {
-                    addItem(name);
-                  }}
-                >
-                  +
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    removeItem(name);
-                  }}
-                >
-                  Remove
-                </Button>
-              </Stack>
-            </Box>
-          ))}
-        </Stack>
+      />
+    </Box>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ textAlign: "center" , px: "auto" , fontWeight: "bold"}} >Item</TableCell>
+              <TableCell sx={{ textAlign: "center", px: "auto", fontWeight: "bold"}} >Quantity</TableCell>
+              <TableCell sx={{ textAlign: "center", px: "auto" , fontWeight: "bold"}} >Modify</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredInventory.map(({name, quantity}) => (
+              <TableRow key={name}>
+                <TableCell component="th" scope="row" sx={{ textAlign: "center" , px: 5 }}>
+                  {name.charAt(0).toUpperCase() + name.slice(1)}
+                </TableCell>
+                <TableCell sx={{ textAlign: "center" , px: 5}}>{quantity}</TableCell>
+                <TableCell sx={{ textAlign: "center"}}>
+                  <Button sx={{ borderRadius: '80%' }} onClick={() => addItem(name, 1)}>+</Button>
+                  <Button sx={{ borderRadius: '80%' }} onClick={() => removeItem(name, -1)}>-</Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Container>
       </Box>
-
       <Button
         variant="contained"
+        maxWidth="sm"
         onClick={() => {
           handleOpen();
         }}
-        sx={{ margin: 2 }} // Optional margin for spacing
+        sx={{ padding: 2 }} // Optional margin for spacing
       >
         Add New Item
       </Button>

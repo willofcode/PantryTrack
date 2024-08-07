@@ -5,8 +5,8 @@ import { firebaseConfig } from "@/firebase";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Pantry Track",
-  description: "Track your pantry inventory",
+  title: "Pantry Tracker | Inventory Tracker",
+  description: "Tracking your pantry inventory made easy.",
 };
 
 export default function RootLayout({ children }) {
