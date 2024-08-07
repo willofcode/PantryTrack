@@ -59,6 +59,12 @@ a {
   text-decoration: none;
 }
 
+.MuiContainer-root {
+  position: top;
+  display: flex;
+  flex-direction: column;
+}
+
 @keyframes slideInDown {
   0% {
     transform: translateY(-100%);

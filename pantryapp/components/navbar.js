@@ -15,10 +15,31 @@ import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Button from '@mui/material/Button';
+import Slide from '@mui/material/Slide';
 
 const drawerWidth = 240;
 const navItems = ['Analytics', 'List', 'logout'];
+
+function HideOnScroll(props) {
+  const { children, window } = props;
+  const trigger = useScrollTrigger({
+    target: window ? window() : undefined,
+  });
+
+  return (
+    <Slide appear={false} direction="down" in={!trigger}>
+      {children}
+    </Slide>
+  );
+}
+
+HideOnScroll.propTypes = {
+  children: PropTypes.element.isRequired,
+  window: PropTypes.func,
+};
+
 
 function DrawerAppBar(props) {
   const { window } = props;
@@ -27,6 +48,7 @@ function DrawerAppBar(props) {
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
+
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
@@ -51,6 +73,7 @@ function DrawerAppBar(props) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
+      <HideOnScroll {...props}>
       <AppBar component="nav">
         <Toolbar>
           <IconButton
@@ -67,7 +90,7 @@ function DrawerAppBar(props) {
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
           >
-            MUI
+            Pantry Tracker
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             {navItems.map((item) => (
@@ -78,6 +101,7 @@ function DrawerAppBar(props) {
           </Box>
         </Toolbar>
       </AppBar>
+      </HideOnScroll>
       <nav>
         <Drawer
           container={container}
@@ -95,7 +119,7 @@ function DrawerAppBar(props) {
           {drawer}
         </Drawer>
       </nav>
-      <Box component="main" sx={{ p: 3 }}>
+      <Box component="main" sx={{ }}>
         <Toolbar />
       </Box>
     </Box>

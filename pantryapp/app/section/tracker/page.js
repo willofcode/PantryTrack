@@ -1,11 +1,13 @@
+"use client";
 
-import DrawerAppBar from "@/components/navbar";
 import InventoryTracker from "./tracklist";
+import { Box } from '@mui/material';
+
 
 export default function TrackerPage() {
     return (
-        <DrawerAppBar>
-        <InventoryTracker />
-        </DrawerAppBar>
+        <Box>
+            <InventoryTracker />
+        </Box>
     );
 }

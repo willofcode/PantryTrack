@@ -19,6 +19,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { collection, query, getDocs, doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
+import DrawerAppBar from '@/components/navbar';
 
 export default function InventoryTracker() {
   const [inventory, setInventory] = useState([]);
@@ -131,29 +132,17 @@ export default function InventoryTracker() {
           </Stack>
         </Box>
       </Modal>
-
-      <Box fullWidth height="800" overflow={"auto"}>
-        <Box
-          fullWidth  // "inventory items" box
-          height="100px"
-          bgcolor="#ADD8E6"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          sx={{ marginBottom: 2 }}
-        >
-          <Typography variant="h4" color="#333" >
-            Inventory Items
-          </Typography>
-        </Box>
-    <Container maxWidth="md">
-    <Box display="flex" paddingY={2}>
+      <DrawerAppBar />
+      <Box fullWidth height="800" overflow={'auto'}>
+    <Container maxWidth="md" position="fixed">
+    <Box display="fixed" paddingY={2} >
       <Typography variant="h4" component="h1" sx={{ marginRight: 'auto' }} >
         Inventory List
       </Typography>
       <TextField
           width={100}
           align="right"
+          position="absolute"
           size='small'
           variant="filled"        
           label="Search Items"
@@ -161,7 +150,7 @@ export default function InventoryTracker() {
           onChange={(e) => setSearchQuery(e.target.value)}
       />
     </Box>
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} >
         <Table>
           <TableHead>
             <TableRow>
