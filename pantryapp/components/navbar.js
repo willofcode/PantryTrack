@@ -18,9 +18,10 @@ import Typography from '@mui/material/Typography';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Button from '@mui/material/Button';
 import Slide from '@mui/material/Slide';
+import Link from 'next/link';
 
 const drawerWidth = 240;
-const navItems = ['Analytics', 'List', 'logout'];
+const navItems = [{item:'Analytics', links: "/"}, {item:'List', links:"/"}, {item:'Home',links: "/"} , {item:'Logout', links: "/"}];
 
 function HideOnScroll(props) {
   const { children, window } = props;
@@ -57,11 +58,13 @@ function DrawerAppBar(props) {
       </Typography>
       <Divider />
       <List>
-        {navItems.map((item) => (
+        {navItems.map(({item, links}) => (
           <ListItem key={item} disablePadding>
-            <ListItemButton sx={{ textAlign: 'center' }}>
-              <ListItemText primary={item} />
-            </ListItemButton>
+            <Link href={links} passhref>
+              <ListItemButton sx={{ textAlign: 'center' }}>
+                <ListItemText primary={item} />
+              </ListItemButton>
+            </Link>
           </ListItem>
         ))}
       </List>
@@ -73,7 +76,7 @@ function DrawerAppBar(props) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <HideOnScroll {...props}>
+      {/* <HideOnScroll {...props}> */}
       <AppBar component="nav">
         <Toolbar>
           <IconButton
@@ -93,15 +96,15 @@ function DrawerAppBar(props) {
             Pantry Tracker
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            {navItems.map((item) => (
-              <Button key={item} sx={{ color: '#fff' }}>
+            {navItems.map(({item,links}) => (
+              <Button key={item} href={links} passhref sx={{ color: '#fff' }}>
                 {item}
               </Button>
             ))}
           </Box>
         </Toolbar>
       </AppBar>
-      </HideOnScroll>
+      {/* </HideOnScroll> */}
       <nav>
         <Drawer
           container={container}
@@ -119,7 +122,7 @@ function DrawerAppBar(props) {
           {drawer}
         </Drawer>
       </nav>
-      <Box component="main" sx={{ }}>
+      <Box>
         <Toolbar />
       </Box>
     </Box>

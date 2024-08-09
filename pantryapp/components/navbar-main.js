@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
@@ -16,7 +18,8 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
 const drawerWidth = 240;
-const navItems = ['Home', 'About', 'Sign In', 'Sign Up'];
+const navItems = ['Home', 'Sign Up'];
+
 
 function DrawerAppBar(props) {
   const { window } = props;
@@ -93,7 +96,7 @@ function DrawerAppBar(props) {
           {drawer}
         </Drawer>
       </nav>
-      <Box component="main" sx={{ p: 3 }}>
+      <Box component="main">
         <Toolbar />
       </Box>
     </Box>
