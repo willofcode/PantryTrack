@@ -16,7 +16,8 @@ const CameraComponent = ({ onDetection, inventoryItems, mode }) => {
     setDetecting(true);
   
     try {
-      const response = await fetch('@/api/object-detection', {
+      const response = await fetch('/api/object-detection', {
+        method: 'POST',
         image: imageSrc, 
         inventoryItems: inventoryItems
       });

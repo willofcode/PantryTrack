@@ -19,9 +19,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import SearchBar from '@/components/searchbar';
 import InventoryTable from '@/components/Inventorytable';
 import { AddIcon, RemoveIcon, RestaurantIcon, CloseIcon, CameraAltIcon } from '@mui/icons-material';
-import CameraComponent from '@/components/camera';
+import CameraComponent from '../../../components/camera';
 
-const InventoryTracker = () => {
+export default function InventoryTracker() {
   const [inventory, setInventory] = useState([]);
   const [open, setOpen] = useState(false);
   const [action, setAction] = useState(null);
@@ -135,8 +135,8 @@ const InventoryTracker = () => {
     fetchInventory();
   }, []);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  // const handleOpen = () => setOpen(true);
+  // const handleClose = () => setOpen(false);
 
   const filteredInventory = inventory.filter(({ name }) =>
     name && name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -149,19 +149,117 @@ const InventoryTracker = () => {
       justifyContent={'space-between'}
       gap={2}
     >
-        <Box 
-          fullWidth
-          display={'flex'}
-          flexDirection={'row'}
-          justifyContent={'space-evenly'}
-          alignItems={'center'}
-          paddingY={2} 
+      <Dialog
+        open={openCamera}
+        onClose={() => setOpenCamera(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
         >
-          <Typography  variant="h4" component="h1" sx={{ align: "center", px: "auto" }}>
-            Inventory List
+          Capture Image
+          <IconButton onClick={() => setOpenCamera(false)}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <CameraComponent
+            onDetection={handleDetection}
+            inventoryItems={Object.keys(inventory)}
+            mode={cameraMode}
+          />
+        </DialogContent>
+      </Dialog> 
+
+      <Dialog
+        open={openNewItemDialog}
+        onClose={() => setOpenNewItemDialog(false)}
+      >
+        <DialogTitle
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          Add New Item
+          <IconButton onClick={() => setOpenNewItemDialog(false)}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Item Name"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={newItemName}
+            onChange={(e) => setNewItemName(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenNewItemDialog(false)}>
+            Cancel
+          </Button>
+          <Button onClick={handleAddNewItem}>Add</Button>
+          <Button
+            onClick={() => {
+              setCameraMode('add_new');
+              setOpenCamera(true);
+            }}
+            startIcon={<CameraAltIcon />}
+          >
+            Use Camera
+          </Button>
+        </DialogActions>
+      </Dialog> 
+      <Dialog
+        open={deleteConfirmation.open}
+        onClose={() => setDeleteConfirmation({ open: false, item: null })}
+      >
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to delete {deleteConfirmation.item} from
+            the inventory?
           </Typography>
-          <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} sx={{ align: "center", px: "auto" }} />
-        </Box>  
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() =>
+              setDeleteConfirmation({ open: false, item: null })
+            }
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => deleteItem(deleteConfirmation.item)}
+            color="error"
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog> 
+    <Box 
+      fullWidth
+      display={'flex'}
+      flexDirection={'row'}
+      justifyContent={'space-evenly'}
+      alignItems={'center'}
+      paddingY={2} 
+    >
+      <Typography  variant="h4" component="h1" sx={{ align: "center", px: "auto" }}>
+        Inventory List
+      </Typography>
+      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} sx={{ align: "center", px: "auto" }} />
+    </Box>  
         {/* <Box
           fullWidth
           display={'flex'}
@@ -237,106 +335,6 @@ const InventoryTracker = () => {
             Suggest Recipe
           </Button> 
         </Box>
-     
-          <Dialog
-            open={openCamera}
-            onClose={() => setOpenCamera(false)}
-            maxWidth="md"
-            fullWidth
-          >
-            <DialogTitle
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              Capture Image
-              <IconButton onClick={() => setOpenCamera(false)}>
-                <CloseIcon />
-              </IconButton>
-            </DialogTitle>
-            <DialogContent>
-              <CameraComponent
-                onDetection={handleDetection}
-                inventoryItems={Object.keys(inventory)}
-                mode={cameraMode}
-              />
-            </DialogContent>
-          </Dialog> 
-
-          <Dialog
-            open={openNewItemDialog}
-            onClose={() => setOpenNewItemDialog(false)}
-          >
-            <DialogTitle
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              Add New Item
-              <IconButton onClick={() => setOpenNewItemDialog(false)}>
-                <CloseIcon />
-              </IconButton>
-            </DialogTitle>
-            <DialogContent>
-              <TextField
-                autoFocus
-                margin="dense"
-                label="Item Name"
-                type="text"
-                fullWidth
-                variant="standard"
-                value={newItemName}
-                onChange={(e) => setNewItemName(e.target.value)}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setOpenNewItemDialog(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleAddNewItem}>Add</Button>
-              <Button
-                onClick={() => {
-                  setCameraMode('add_new');
-                  setOpenCamera(true);
-                }}
-                startIcon={<CameraAltIcon />}
-              >
-                Use Camera
-              </Button>
-            </DialogActions>
-          </Dialog> 
-
-          <Dialog
-            open={deleteConfirmation.open}
-            onClose={() => setDeleteConfirmation({ open: false, item: null })}
-          >
-            <DialogTitle>Confirm Deletion</DialogTitle>
-            <DialogContent>
-              <Typography>
-                Are you sure you want to delete {deleteConfirmation.item} from
-                the inventory?
-              </Typography>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                onClick={() =>
-                  setDeleteConfirmation({ open: false, item: null })
-                }
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={() => deleteItem(deleteConfirmation.item)}
-                color="error"
-              >
-                Delete
-              </Button>
-            </DialogActions>
-          </Dialog> 
       <Box >
         <Container 
           maxWidth="md"
@@ -360,4 +358,4 @@ const InventoryTracker = () => {
   );
 };
 
-export default InventoryTracker;
+
