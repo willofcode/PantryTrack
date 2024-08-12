@@ -73,30 +73,4 @@ const darkPalette = {
     },
   }));
   
-  localStorage.getItem(darkMode);
-  localStorage.setItem("darkMode", darkMode);
-
-  const customTheme = createTheme({
-    palette: darkMode ? darkPalette : lightPalette,
-    typography: {
-      fontFamily: '"Poppins", "Roboto", "Arial", sans-serif',
-      h4: {
-        fontWeight: 600,
-      },
-      h6: {
-        fontWeight: 500,
-      },
-    },
-    components: {
-      MuiCard: {
-        styleOverrides: {
-          root: {
-            borderRadius: 16,
-            boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
-          },
-        },
-      },
-    },
-  });
-  
-  export { darkPalette, lightPalette, StyledTableContainer, StyledTableCell, StyledButton, ActionButton, customTheme };
+  export { darkPalette, lightPalette, StyledTableContainer, StyledTableCell, StyledButton, ActionButton};

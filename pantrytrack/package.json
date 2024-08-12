@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "dotenv": "^16.4.5",
-    "reactfire": "^4.2.3"
-  }
-}
