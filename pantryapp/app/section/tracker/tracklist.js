@@ -18,7 +18,7 @@ import {
 import CircularProgress from '@mui/material/CircularProgress';
 import SearchBar from '@/components/searchbar';
 import InventoryTable from '@/components/Inventorytable';
-import { AddIcon, RemoveIcon, RestaurantIcon, CloseIcon, CameraAltIcon } from '@mui/icons-material';
+// import { AddIcon, RemoveIcon, RestaurantIcon, CloseIcon, CameraAltIcon } from '@mui/icons-material';
 import CameraComponent from '../../../components/camera';
 
 export default function InventoryTracker() {
@@ -135,8 +135,8 @@ export default function InventoryTracker() {
     fetchInventory();
   }, []);
 
-  // const handleOpen = () => setOpen(true);
-  // const handleClose = () => setOpen(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const filteredInventory = inventory.filter(({ name }) =>
     name && name.toLowerCase().includes(searchQuery.toLowerCase())

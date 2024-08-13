@@ -1,8 +1,9 @@
+'use client';
+
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
 import { useState } from "react";
-import { loadModel, loadImage } from "@/api/image-processing";
-import { Box, Container, Button, Typography } from "@mui/material";
+import { loadModel, loadImage } from "@/app/api/image-process/imageprocessing";
+import { Box, Container, Button, Typography, Input } from "@mui/material";
 
 export default function Home() {
   const [model, setModel] = useState(null);
@@ -36,7 +37,14 @@ export default function Home() {
     };
 
     return (
-        <Box>
+        <Box
+            height={'100vh'}
+            width={'100vw'}
+            display={'flex'}
+            flexDirection={'column'}
+            justifyContent={'space-between'}
+            gap={2}
+            >
             <Container>
                 <Head>
                     <Typography

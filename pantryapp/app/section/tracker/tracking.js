@@ -7,10 +7,8 @@ import {
   Typography,
   Card,
   CardContent,
-  Table,
-  TableBody,
-  TableHead,
-  TableRow,
+  TableCell,
+  TableContainer,
   TextField,
   Button,
   Box,
@@ -19,42 +17,82 @@ import {
   DialogContent,
   DialogActions,
   IconButton,
+  useTheme,
   ThemeProvider,
+  createTheme,
   CssBaseline,
   InputAdornment
 } from "@mui/material";
-import { collection, query, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import RestaurantIcon from "@mui/icons-material/Restaurant";
-import { firestore } from "../../../firebase";
+import { Switch } from '@mui/material'
+import { firestore } from "@/firebase";
 import SearchIcon from "@mui/icons-material/Search";
-import CameraComponent from "../../../components/camera";
+import {
+  query,
+  collection,
+  getDocs,
+  doc,
+  updateDoc,
+  setDoc,
+  deleteDoc,
+} from "firebase/firestore";
+import CameraComponent from "@/components/camera";
+import { styled } from "@mui/material/styles";
 import { PieChart, BarChart } from "@mui/x-charts";
 import { motion } from "framer-motion";
-import GenerateRecipe from "../../../components/generateRecipe";
-import { StyledTableContainer, StyledTableCell, StyledButton, ActionButton, customTheme } from "@/components/styledcomponents";
+import GenerateRecipe from "@/components/generateRecipe";
+import { darkPalette, lightPalette, StyledButton, StyledSearch } from "@/components/styledcomponents";
+import InventoryTable from "../../../components/Inventorytable";
 
+  
 
 const AnimatedCard = motion(Card);
 
 export default function Dashboard() {
-  const [inventory, setInventory] = useState([]);
-  const [action, setAction] = useState(null);
+  const [inventory, setInventory] = useState({});
+  const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(true);
   const [openCamera, setOpenCamera] = useState(false);
   const [newItemName, setNewItemName] = useState("");
   const [openNewItemDialog, setOpenNewItemDialog] = useState(false);
-  const [deleteConfirmation, setDeleteConfirmation] = useState({
-    open: false,
-    item: null,
-  });
+  const [darkMode, setDarkMode] = useState(false);
   const [openGenerateRecipe, setOpenGenerateRecipe] = useState(false);
   const [cameraMode, setCameraMode] = useState('');
   const [searchQuery, setSearchQuery] = useState("");
+  const [deleteConfirmation, setDeleteConfirmation] = useState("");
+
+  const toggleDarkMode = () => setDarkMode(!darkMode);
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
+
+
+  const customTheme = createTheme({
+    palette: darkMode ? darkPalette : lightPalette,
+    typography: {
+      fontFamily: '"Poppins", "Roboto", "Arial", sans-serif',
+      h4: {
+        fontWeight: 600,
+      },
+      h6: {
+        fontWeight: 500,
+      },
+    },
+    components: {
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            borderRadius: 16,
+            boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+          },
+        },
+      },
+    },
+  });
 
   useEffect(() => {
     fetchInventory();
@@ -62,13 +100,14 @@ export default function Dashboard() {
 
   const fetchInventory = async () => {
     setLoading(true);
-    const inventory = query(collection(firestore, 'pantry'));
-    const Snapshot = await getDocs(inventory);
-    const inventoryList = [];
-    Snapshot.forEach((doc) => {
-        inventoryList.push({ name: doc.id, ...doc.data() || 0 });
+    const inventoryCollection = query(collection(firestore, "pantry"));
+    const inventorySnapshot = await getDocs(inventoryCollection);
+    const inventoryData = {};
+    inventorySnapshot.forEach((doc) => {
+      inventoryData[doc.id] = doc.data().quantity;
     });
-    setInventory(inventoryList);
+    setInventory(inventoryData);
+    console.log(inventoryData);
     setLoading(false);
   };
 
@@ -77,7 +116,9 @@ export default function Dashboard() {
     const itemRef = doc(collection(firestore, "pantry"), item);
 
     if (inventory[item] === undefined) {
-      await setDoc(itemRef, { quantity: newQuantity });
+      await setDoc(itemRef, { quantity: newQuantity});
+    } else if (newQuantity === 0) {
+      await deleteDoc(itemRef);
     } else {
       await updateDoc(itemRef, { quantity: newQuantity });
     }
@@ -86,18 +127,45 @@ export default function Dashboard() {
       ...prev,
       [item]: newQuantity,
     }));
+    await fetchInventory();
   };
 
+  // const deleteItem = async (item) => {
+  //   console.log("Deleting item:", item);
+  //   if (!item || item.trim() === '') {
+  //     console.error("Invalid item:", item);
+  //     return;
+  //   }
+  
+  //   try {
+  //     const itemRef = doc(firestore, "pantry", item);
+  //     console.log("Document Reference:", itemRef);
+  //     await deleteDoc(itemRef);
+  //     setInventory((prev) => {
+  //       const updatedInventory = { ...prev };
+  //       delete updatedInventory[item];
+  //       return updatedInventory;
+  //     });
+  //     await fetchInventory();
+  //     setDeleteConfirmation({ open: false, item: null });
+  //   } catch (error) {
+  //     console.error("Error deleting item:", error);
+  //   }
+  // };
+
   const deleteItem = async (item) => {
-    const itemRef = doc(collection(firestore, "pantry"), item);
+    const itemRef = doc(firestore, "pantry", item);
     await deleteDoc(itemRef);
     setInventory((prev) => {
       const newInventory = { ...prev };
       delete newInventory[item];
       return newInventory;
     });
-    setDeleteConfirmation({ open: false, item: null });
+    setDeleteConfirmation(item);
   };
+  
+
+  console.log("item to be deleted", deleteConfirmation);
 
   const handleDetection = async (detectedObject) => {
     setOpenCamera(false);
@@ -125,33 +193,9 @@ export default function Dashboard() {
     setSearchQuery(event.target.value);
   };
 
-  const filteredInventory = inventory.filter(({ name }) =>
-    name && name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredInventory = Object.entries(inventory).filter(([item, _]) =>
+    item.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  const customTheme = createTheme({
-    palette: darkMode ? darkPalette : lightPalette,
-    typography: {
-      fontFamily: '"Poppins", "Roboto", "Arial", sans-serif',
-      h4: {
-        fontWeight: 600,
-      },
-      h6: {
-        fontWeight: 500,
-      },
-    },
-    components: {
-      MuiCard: {
-        styleOverrides: {
-          root: {
-            borderRadius: 16,
-            boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
-          },
-        },
-      },
-    },
-  });
-
 
   return (
     <ThemeProvider theme={customTheme}>
@@ -163,23 +207,22 @@ export default function Dashboard() {
             justifyContent="space-between"
             alignItems="center"
             mb={4}
+            overflow={'hidden'}
           >
             <Typography
               variant="h4"
               component="h1"
               sx={{ fontWeight: "bold", color: "primary.main" }}
             >
-              Inventory Dashboard
+              Pantry Inventory
             </Typography>
-          </Box>
-
-          <TextField
-            fullWidth
+            <TextField
+            width={100}
             variant="outlined"
             placeholder="Search items..."
             value={searchQuery}
             onChange={handleSearchChange}
-            sx={{ mb: 4 }}
+            sx={{ px: "auto"}}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -188,146 +231,23 @@ export default function Dashboard() {
               ),
             }}
           />
-
-          <Grid container spacing={4}>
-            {/* Inventory Overview Chart */}
-            <Grid item xs={12} md={6}>
-              <AnimatedCard
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <CardContent>
-                  <Typography variant="h6" gutterBottom color="secondary.main">
-                    Inventory Overview
-                  </Typography>
-                  <PieChart
-                    series={[
-                      {
-                        data: Object.entries(inventory).map(
-                          ([name, quantity]) => ({
-                            id: name,
-                            value: quantity,
-                            label: name,
-                          })
-                        ),
-                        innerRadius: 30,
-                        paddingAngle: 2,
-                        cornerRadius: 5,
-                        highlightScope: {
-                          faded: "global",
-                          highlighted: "item",
-                        },
-                        faded: { innerRadius: 30, additionalRadius: -30 },
-                      },
-                    ]}
-                    width={500}
-                    height={300}
-                    colors={[
-                      customTheme.palette.primary.main,
-                      customTheme.palette.secondary.main,
-                      customTheme.palette.error.main,
-                    ]}
-                  />
-                </CardContent>
-              </AnimatedCard>
-            </Grid>
-
-            {/* Top Items Chart */}
-            <Grid item xs={12} md={6}>
-              <AnimatedCard
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                <CardContent>
-                  <Typography variant="h6" gutterBottom color="secondary.main">
-                    Top 5 Items
-                  </Typography>
-                  <BarChart
-                    xAxis={[
-                      {
-                        scaleType: "band",
-                        data: Object.keys(inventory).slice(0, 5),
-                      },
-                    ]}
-                    series={[
-                      {
-                        data: Object.values(inventory).slice(0, 5),
-                        color: customTheme.palette.primary.main,
-                      },
-                    ]}
-                    width={500}
-                    height={300}
-                  />
-                </CardContent>
-              </AnimatedCard>
-            </Grid>
-
-            {/* Inventory Table */}
-            <Grid item xs={12}>
-              <AnimatedCard
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-              >
-                <CardContent>
-                  <Typography variant="h6" gutterBottom color="secondary.main">
-                    Inventory List
-                  </Typography>
-                  <StyledTableContainer>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <StyledTableCell>Item</StyledTableCell>
-                          <StyledTableCell align="right">
-                            Quantity
-                          </StyledTableCell>
-                          <StyledTableCell align="right">
-                            Modify
-                          </StyledTableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {filteredInventory.map(({name, quantity}) => (
-                          <TableRow key={name}>
-                            <StyledTableCell component="th" scope="row">
-                              {name}
-                            </StyledTableCell>
-                            <StyledTableCell align="right">
-                              {quantity}
-                            </StyledTableCell>
-                            <StyledTableCell align="right">
-                              <ActionButton
-                                onClick={() => updateInventory(item, 1)}
-                              >
-                                <AddIcon />
-                              </ActionButton>
-                              <ActionButton
-                                onClick={() => updateInventory(item, -1)}
-                              >
-                                <RemoveIcon />
-                              </ActionButton>
-                              <ActionButton
-                                onClick={() =>
-                                  setDeleteConfirmation({ open: true, item })
-                                }
-                              >
-                                <DeleteIcon />
-                              </ActionButton>
-                            </StyledTableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </StyledTableContainer>
-                </CardContent>
-              </AnimatedCard>
-            </Grid>
-          </Grid>
-
+            {/* <Switch
+              checked={darkMode}
+              onChange={toggleDarkMode}
+              color="default"
+              inputProps={{ 'aria-label': 'toggle dark mode' }}
+            /> */}
+          </Box>
           {/* Action Buttons */}
-          <Box mt={4} display="flex" justifyContent="center" gap={2}>
+          <Box 
+            fullWidth
+            display={'flex'}
+            flexDirection={'row'}
+            justifyContent={'space-evenly'}
+            sx={{
+              px: 'auto',
+            }}
+          >
             <StyledButton
               variant="contained"
               color="primary"
@@ -360,15 +280,46 @@ export default function Dashboard() {
             >
               Add New Item
             </StyledButton>
-            <StyledButton
+            {/* <StyledButton
               variant="outlined"
               color="primary"
               startIcon={<RestaurantIcon />}
               onClick={() => setOpenGenerateRecipe(true)}
             >
               Suggest Recipe
-            </StyledButton>
+            </StyledButton> */}
           </Box>
+
+            {/* Inventory Table */}
+            <Grid 
+              item xs={12} 
+              marginTop={4}  
+              overflow={"scroll"}
+              height={500}
+              >
+              <AnimatedCard
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <CardContent>
+                  {/* <Typography variant="h6" gutterBottom color="secondary.main">
+                    Inventory List
+                  </Typography> */}
+                    <InventoryTable
+                      inventory={filteredInventory}
+                      add={updateInventory}
+                      remove={updateInventory}
+                      DeleteConfirmation={
+                        (item) => {
+                          handleOpen();
+                          setDeleteConfirmation(item);
+                        }
+                      }
+                    />
+                </CardContent>
+              </AnimatedCard>
+            </Grid>
 
           {/* Camera Dialog */}
           <Dialog
@@ -417,7 +368,6 @@ export default function Dashboard() {
             </DialogTitle>
             <DialogContent>
               <TextField
-                autoFocus
                 margin="dense"
                 label="Item Name"
                 type="text"
@@ -446,26 +396,30 @@ export default function Dashboard() {
 
           {/* Delete Confirmation Dialog */}
           <Dialog
-            open={deleteConfirmation.open}
-            onClose={() => setDeleteConfirmation({ open: false, item: null })}
+            open={open}
+            onClose={handleClose}
           >
             <DialogTitle>Confirm Deletion</DialogTitle>
             <DialogContent>
               <Typography>
-                Are you sure you want to delete {deleteConfirmation.item} from
+                Are you sure you want to delete {deleteConfirmation.charAt(0).toUpperCase() + deleteConfirmation.slice(1)} from
                 the inventory?
               </Typography>
             </DialogContent>
             <DialogActions>
               <Button
-                onClick={() =>
-                  setDeleteConfirmation({ open: false, item: null })
-                }
+                onClick={() =>{
+                  handleClose()
+                  setDeleteConfirmation("")
+                }}
               >
                 Cancel
               </Button>
               <Button
-                onClick={() => deleteItem(deleteConfirmation.item)}
+                onClick={() => {
+                  deleteItem(deleteConfirmation)
+                  handleClose()
+                }}
                 color="error"
               >
                 Delete

@@ -46,7 +46,7 @@ export default function SignInSide() {
           md={7}
           sx={(theme) => ({
             backgroundImage:
-              'url(https://img.freepik.com/free-photo/abstract-smooth-dark-blue-with-black-vignette-studio-well-use-as-background-business-report-digital-website-template-backdrop_1258-66818.jpg?w=1380&t=st=1723013028~exp=1723013628~hmac=7c024b47ceb53eee3b11f8b11af393baa8f2b189fd79666d71afee38514cbb39)',
+              'url(https://images.pexels.com/photos/1166644/pexels-photo-1166644.jpeg)',
             backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
             backgroundSize: 'cover',
             backgroundPosition: 'left',

@@ -1,16 +1,17 @@
 import { styled } from "@mui/material/styles";
-import { TableContainer, TableCell, Button, IconButton, createTheme } from "@mui/material";
+import { TableContainer, TableCell, Button, IconButton} from "@mui/material";
+import SearchBar from "./searchbar";
 
 const darkPalette = {
     primary: {
-      main: "#bb86fc",
-      light: "#e2b8ff",
-      dark: "#8858c8",
+      main: "#0096FF",
+      light: "#89CFF0",
+      dark: "#6495ED",
     },
     secondary: {
-      main: "#03dac6",
-      light: "#66fff9",
-      dark: "#00a896",
+      main: "#B6D0E2",
+      light: "#0F52BA",
+      dark: "#87CEEB",
     },
     background: {
       default: "#121212",
@@ -27,21 +28,21 @@ const darkPalette = {
   
   const lightPalette = {
     primary: {
-      main: "#6200ee",
-      light: "#9c4dff",
-      dark: "#3700b3",
+      main: "#6495ED",
+      light: "#87CEEB",
+      dark: "#B6D0E2",
     },
     secondary: {
-      main: "#03dac6", 
-      light: "#66fff9",
-      dark: "#00a896",
+      main: "#4169E1", 
+      light: "#0F52BA",
+      dark: "#87CEEB",
     },
     background: {
       default: "#f5f5f5",
       paper: "#ffffff",
     },
     text: {
-      primary: "#121212",
+      primary: "#000000",
       secondary: "#6e6e6e",
     },
   };
@@ -72,5 +73,16 @@ const darkPalette = {
       backgroundColor: theme.palette.action.hover,
     },
   }));
+
+  const StyledSearch = styled(SearchBar)(({ theme }) => ({
+    borderRadius: 8,
+    padding: "8px 16px",
+    transition: "all 0.3s ease",
+    "&:hover": {
+      transform: "translateY(-2px)",
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+      backgroundColor: theme.palette.action.hover,
+    },
+  }));
   
-  export { darkPalette, lightPalette, StyledTableContainer, StyledTableCell, StyledButton, ActionButton};
+  export { darkPalette, lightPalette, StyledTableContainer, StyledTableCell, StyledButton, ActionButton, StyledSearch };

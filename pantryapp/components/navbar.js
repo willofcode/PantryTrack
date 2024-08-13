@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { AppBar, Box, CssBaseline, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemText, Toolbar, Typography, useScrollTrigger, Button, Switch, Slide, createTheme, useTheme } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Link from 'next/link';
-import { darkPalette, lightPalette,  } from './styledcomponents';
+import { darkPalette, lightPalette} from './styledcomponents';
 
 const drawerWidth = 240;
 const navItems = [{item:'Analytics', links: "/"}, {item:'List', links:"/"}, {item:'Home',links: "/"} , {item:'Logout', links: "/"}];
@@ -32,6 +32,7 @@ function DrawerAppBar(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [darkMode, setDarkMode] = React.useState(false);
+  const Theme = useTheme();
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -78,13 +79,13 @@ function DrawerAppBar(props) {
             </Link>
           </ListItem>
         ))}
+        <Switch
+          checked={darkMode}
+          onChange={toggleDarkMode}
+          color="default"
+          inputProps={{ 'aria-label': 'toggle dark mode' }}
+        />
       </List>
-      <Switch
-        checked={darkMode}
-        onChange={toggleDarkMode}
-        color="default"
-        inputProps={{ 'aria-label': 'toggle dark mode' }}
-      />
     </Box>
   );
 

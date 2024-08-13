@@ -8,9 +8,10 @@ const SearchBar = ({ searchQuery, setSearchQuery }) => {
         width={100}
         align="right"
         position="fixed"
-        size="small">
+        size="medium"
+        >
         <Input
-          placeholder="Search Items Here"
+          placeholder="Search Items"
           variant="soft"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
