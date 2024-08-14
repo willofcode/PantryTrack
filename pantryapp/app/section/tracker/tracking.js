@@ -7,8 +7,6 @@ import {
   Typography,
   Card,
   CardContent,
-  TableCell,
-  TableContainer,
   TextField,
   Button,
   Box,
@@ -42,23 +40,21 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import CameraComponent from "@/components/camera";
-import { styled } from "@mui/material/styles";
-import { PieChart, BarChart } from "@mui/x-charts";
 import { motion } from "framer-motion";
-import GenerateRecipe from "@/components/generateRecipe";
-import { darkPalette, lightPalette, StyledButton, StyledSearch } from "@/components/styledcomponents";
+import { darkPalette, lightPalette, StyledButton} from "@/components/styledcomponents";
 import InventoryTable from "../../../components/Inventorytable";
-
-  
 
 const AnimatedCard = motion(Card);
 
 export default function Dashboard() {
   const [inventory, setInventory] = useState({});
+  const [action, setAction] = useState(null);
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(true);
   const [openCamera, setOpenCamera] = useState(false);
   const [newItemName, setNewItemName] = useState("");
+  const [itemQuantity, setItemQuantity] = useState("");
+  const [itemDate, setItemDate] = useState("");
   const [openNewItemDialog, setOpenNewItemDialog] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [openGenerateRecipe, setOpenGenerateRecipe] = useState(false);
@@ -116,11 +112,9 @@ export default function Dashboard() {
     const itemRef = doc(collection(firestore, "pantry"), item);
 
     if (inventory[item] === undefined) {
-      await setDoc(itemRef, { quantity: newQuantity});
-    } else if (newQuantity === 0) {
-      await deleteDoc(itemRef);
+      await setDoc(itemRef, { quantity: newQuantity, date: itemDate});
     } else {
-      await updateDoc(itemRef, { quantity: newQuantity });
+      await updateDoc(itemRef, { quantity: newQuantity, date: itemDate});
     }
 
     setInventory((prev) => ({
@@ -130,30 +124,8 @@ export default function Dashboard() {
     await fetchInventory();
   };
 
-  // const deleteItem = async (item) => {
-  //   console.log("Deleting item:", item);
-  //   if (!item || item.trim() === '') {
-  //     console.error("Invalid item:", item);
-  //     return;
-  //   }
-  
-  //   try {
-  //     const itemRef = doc(firestore, "pantry", item);
-  //     console.log("Document Reference:", itemRef);
-  //     await deleteDoc(itemRef);
-  //     setInventory((prev) => {
-  //       const updatedInventory = { ...prev };
-  //       delete updatedInventory[item];
-  //       return updatedInventory;
-  //     });
-  //     await fetchInventory();
-  //     setDeleteConfirmation({ open: false, item: null });
-  //   } catch (error) {
-  //     console.error("Error deleting item:", error);
-  //   }
-  // };
-
   const deleteItem = async (item) => {
+    console.log("item to be deleted", deleteConfirmation);
     const itemRef = doc(firestore, "pantry", item);
     await deleteDoc(itemRef);
     setInventory((prev) => {
@@ -161,11 +133,9 @@ export default function Dashboard() {
       delete newInventory[item];
       return newInventory;
     });
-    setDeleteConfirmation(item);
+    setDeleteConfirmation("");
   };
   
-
-  console.log("item to be deleted", deleteConfirmation);
 
   const handleDetection = async (detectedObject) => {
     setOpenCamera(false);
@@ -183,10 +153,15 @@ export default function Dashboard() {
 
   const handleAddNewItem = async () => {
     if (newItemName.trim()) {
-      await updateInventory(newItemName.trim(), 1);
+      await updateInventory(newItemName.trim(), itemQuantity, itemDate);
       setNewItemName('');
+      {itemQuantity < 0 ? setItemQuantity(0): setItemQuantity('')};
+      {itemDate !== new Date().toISOString().split('T')[0] ? setItemDate('') : setItemDate(itemDate);};
       setOpenNewItemDialog(false);
     }
+    console.log("new item added", newItemName);
+    console.log("quantity added", itemQuantity);
+    console.log("date added", itemDate);
   };
 
   const handleSearchChange = (event) => {
@@ -217,20 +192,21 @@ export default function Dashboard() {
               Pantry Inventory
             </Typography>
             <TextField
-            width={100}
-            variant="outlined"
-            placeholder="Search items..."
-            value={searchQuery}
-            onChange={handleSearchChange}
-            sx={{ px: "auto"}}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
+              width={100}
+              variant="outlined"
+              placeholder="Search items..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              style={{ width: '300px'}}
+              sx={{ px: "auto"}}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
             {/* <Switch
               checked={darkMode}
               onChange={toggleDarkMode}
@@ -362,7 +338,7 @@ export default function Dashboard() {
               }}
             >
               Add New Item
-              <IconButton onClick={() => setOpenNewItemDialog(false)}>
+              <IconButton onClick={() => {setOpenNewItemDialog(false)}}>
                 <CloseIcon />
               </IconButton>
             </DialogTitle>
@@ -375,6 +351,27 @@ export default function Dashboard() {
                 variant="standard"
                 value={newItemName}
                 onChange={(e) => setNewItemName(e.target.value)}
+              />
+               <TextField
+                id="outlined-quantity"
+                margin="dense"
+                label="Quantity"
+                variant="standard"
+                fullWidth
+                type="number"
+                value={itemQuantity}
+                onChange={(e) => setItemQuantity(e.target.value)}
+              />
+              <TextField
+                id="outlined-date"
+                margin="dense"
+                label="Date Added"
+                variant="standard"
+                fullWidth
+                type="date"
+                InputLabelProps={{ shrink: true }}
+                value={itemDate}
+                onChange={(e) => setItemDate(e.target.value)}
               />
             </DialogContent>
             <DialogActions>
@@ -428,11 +425,11 @@ export default function Dashboard() {
           </Dialog>
 
           {/* Recipe Suggestion Dialog */}
-          <GenerateRecipe
+          {/* <GenerateRecipe
             open={openGenerateRecipe}
             onClose={() => setOpenGenerateRecipe(false)}
             inventoryItems={Object.keys(inventory)}
-          />
+          /> */}
         </Box>
       </Container>
     </ThemeProvider>

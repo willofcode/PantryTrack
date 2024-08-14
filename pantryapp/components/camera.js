@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Camera } from 'react-camera-pro';
-import { Button, Box, Typography, TextField } from '@mui/material';
+import { Button, Box, Typography, TextField, Input } from '@mui/material';
 // import axios from 'axios';
 
 const CameraComponent = ({ onDetection, inventoryItems, mode }) => {
@@ -52,9 +52,9 @@ const CameraComponent = ({ onDetection, inventoryItems, mode }) => {
   };
 
   return (
-    <Box sx={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
-      <Box sx={{ position: 'relative', paddingTop: '75%', overflow: 'hidden' }}>
-        <Camera ref={camera} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
+    <Box borderRadius={60} sx={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
+      <Box borderRadius={60} sx={{ position: 'relative', paddingTop: '75%', overflow: 'hidden' }}>
+        <Camera borderRadius={60}  ref={camera} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
       </Box>
       <Button 
         variant="contained" 
@@ -67,7 +67,7 @@ const CameraComponent = ({ onDetection, inventoryItems, mode }) => {
         {detecting ? 'Detecting...' : 'Capture and Detect'}
       </Button>
       {image && (
-        <Box mt={2}>
+        <Box borderRadius={60} mt={2}>
           <img src={image} alt="Captured" style={{ maxWidth: '100%' }} />
         </Box>
       )}
@@ -78,10 +78,10 @@ const CameraComponent = ({ onDetection, inventoryItems, mode }) => {
       )}
       {mode === 'add_new' && (
         <Box mt={2}>
-          <TextField
+          <Input
             fullWidth
             label="New Item Name"
-            variant="outlined"
+            variant="soft"
             value={newItemName}
             onChange={(e) => setNewItemName(e.target.value)}
             sx={{ mb: 1 }}

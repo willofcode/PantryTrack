@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { darkPalette, lightPalette} from './styledcomponents';
 
 const drawerWidth = 240;
-const navItems = [{item:'Analytics', links: "/"}, {item:'List', links:"/"}, {item:'Home',links: "/"} , {item:'Logout', links: "/"}];
+const navItems = [{item:'Analytics', links: "/section/Analytics"}, {item:'List', links:"/section/tracker"}, {item:'Home',links: "/"} , {item:'Logout', links: "/"}];
 
 function HideOnScroll(props) {
   const { children, window } = props;
@@ -115,7 +115,7 @@ function DrawerAppBar(props) {
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             {navItems.map(({item,links}) => (
-              <Button key={item} href={links} passhref sx={{ color: '#fff' }}>
+              <Button key={item} href={links} passhref="true" sx={{ color: '#fff' }}>
                 {item}
               </Button>
             ))}

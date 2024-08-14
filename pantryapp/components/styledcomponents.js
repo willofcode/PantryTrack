@@ -1,6 +1,5 @@
 import { styled } from "@mui/material/styles";
 import { TableContainer, TableCell, Button, IconButton} from "@mui/material";
-import SearchBar from "./searchbar";
 
 const darkPalette = {
     primary: {
@@ -73,16 +72,5 @@ const darkPalette = {
       backgroundColor: theme.palette.action.hover,
     },
   }));
-
-  const StyledSearch = styled(SearchBar)(({ theme }) => ({
-    borderRadius: 8,
-    padding: "8px 16px",
-    transition: "all 0.3s ease",
-    "&:hover": {
-      transform: "translateY(-2px)",
-      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-      backgroundColor: theme.palette.action.hover,
-    },
-  }));
   
-  export { darkPalette, lightPalette, StyledTableContainer, StyledTableCell, StyledButton, ActionButton, StyledSearch };
+  export { darkPalette, lightPalette, StyledTableContainer, StyledTableCell, StyledButton, ActionButton };
