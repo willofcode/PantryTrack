@@ -2,14 +2,10 @@
 
 import React from "react";
 import { firestore } from "@/firebase";
-import SearchIcon from "@mui/icons-material/Search";
-import CameraComponent from "@/components/camera";
-import { styled } from "@mui/material/styles";
-import { PieChart, BarChart } from "@mui/x-charts";
+import {  BarChart } from "@mui/x-charts";
 import { motion } from "framer-motion";
-import { useTheme } from "@mui/material/styles";
 import { useState, useEffect } from 'react'
-import { Grid, Card, CardContent, Container, Box, Stack, Typography, Button, Modal, TextField, MenuItem, Paper, FormControl, Select, InputLabel, ThemeProvider, createTheme, CssBaseline, } from '@mui/material';
+import { Grid, Card, CardContent, Container, Box, Typography, TextField, MenuItem, FormControl, Select, InputLabel, ThemeProvider, createTheme, CssBaseline, } from '@mui/material';
 import {
   doc,
   getDocs,
@@ -44,11 +40,8 @@ const AnimatedCard = motion(Card);
 
 export default function AnalyticsPage() {
   const [inventory, setInventory] = useState({})
-  const [open, setOpen] = useState(false)
+  // const [open, setOpen] = useState(false)
   const [darkMode, setDarkMode] = useState(false);
-  const [itemName, setItemName] = useState('')
-  const [itemQuantity, setItemQuantity] = useState('')
-  const [itemDate, setitemDate] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [sortOption, setSortOption] = useState('name')
   const [sortOrder, setSortOrder] = useState('asc') // default to ascending
@@ -67,13 +60,13 @@ export default function AnalyticsPage() {
         itemDate = new Date(data.date).toISOString().split('T')[0];
       } else {
         console.warn('Invalid date format:', data.date);
-        itemDate = null; // or handle it appropriately
+        itemDate = null;
       }
   
       inventoryData.push({
         name: doc.id,
         quantity: data.quantity,
-        date: itemDate, // Use the ISO formatted date
+        date: itemDate, 
       });
     });
   
@@ -88,7 +81,6 @@ export default function AnalyticsPage() {
 
   const names = Array.isArray(inventory) ? inventory.map(({ name }) => name) : [];
   const quantities = Array.isArray(inventory) ? inventory.map(({ quantity }) => quantity) : [];
-
 
   // Filter and Sort inventory based on search query, sort option, and order
   const filteredInventory = Object.values(inventory).filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase())).sort((a, b) => {

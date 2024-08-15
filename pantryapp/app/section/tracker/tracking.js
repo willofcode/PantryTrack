@@ -55,7 +55,6 @@ export default function Dashboard() {
   const [itemDate, setItemDate] = useState("");
   const [openNewItemDialog, setOpenNewItemDialog] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [openGenerateRecipe, setOpenGenerateRecipe] = useState(false);
   const [cameraMode, setCameraMode] = useState('');
   const [searchQuery, setSearchQuery] = useState("");
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
@@ -154,9 +153,10 @@ export default function Dashboard() {
       await updateInventory(newItemName.trim(), itemQuantity, itemDate);
       setNewItemName('');
       {itemQuantity < 0 ? setItemQuantity(0): setItemQuantity('')};
-      {itemDate !== new Date().toISOString().split('T')[0] ? setItemDate('') : setItemDate(itemDate)};
+      {itemDate !== new Date().toISOString().split('T')[0] ? setItemDate('') : setItemDate(itemDate.toLocaleDateString())};
       setOpenNewItemDialog(false);
     }
+    console.log("date", itemDate)
   };
 
   const handleSearchChange = (event) => {

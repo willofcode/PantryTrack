@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
-  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 export async function POST(request) {
@@ -25,7 +25,7 @@ export async function POST(request) {
         {
           role: "user",
           content: [
-            { type: "text", text: `Which fruit and vegetable is in this image that I am holding in the hand? If it's one of these items: ${inventoryItems.join(', ')}, respond with that item name. If it's a fruit or vegetable not in the list, respond with the name of the fruit or vegetable. If its not a fruit or vegetable, respond with none` },
+            { type: "text", text: `Which food item ingredient is in this image shown or what am I holding in the hand? If it's one of these items: ${inventoryItems.join(', ')}, respond with that item name. If the food item ingredient is not in the list, respond with the name of the food item ingredient. If its not a fruit or vegetable, respond with none` },
             { type: "image_url", image_url: { url: image } }
           ],
         },

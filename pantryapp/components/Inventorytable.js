@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from '@mui/material';
+import { Paper, Table, TableBody, TableCell, TableHead, TableRow} from '@mui/material';
 import { ActionButton, StyledTableContainer } from './styledcomponents';
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -8,7 +8,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 const InventoryTable = ({ inventory, add, remove, DeleteConfirmation}) => {
   
   return (
-    <StyledTableContainer hoverRow component={Paper}>
+    <StyledTableContainer component={Paper}>
       <Table
         aria-label="table with sticky header"
         stickyHeader

@@ -1,11 +1,11 @@
 import React from 'react';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
+import { Paper, Table, TableBody, TableCell, TableHead, TableRow} from '@mui/material';
 import { StyledTableContainer } from './styledcomponents';
 
 const AnalyticTable = ({inventory}) => {
   
   return (
-    <StyledTableContainer hoverRow component={Paper}>
+    <StyledTableContainer component={Paper}>
       <Table
         aria-label="table with sticky header"
         stickyHeader

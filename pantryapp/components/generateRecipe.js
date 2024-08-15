@@ -68,7 +68,7 @@ const GenerateRecipe = ({ open, onClose, inventoryItems }) => {
         </Typography>
         <List dense>
           {inventoryItems.map((item) => (
-            <ListItem key={item} button onClick={() => handleCheckboxChange(item)}>
+            <ListItem key={item} onClick={() => handleCheckboxChange(item)}>
               <Checkbox
                 checked={selectedItems.includes(item)}
                 onChange={() => handleCheckboxChange(item)}
@@ -109,7 +109,9 @@ const GenerateRecipe = ({ open, onClose, inventoryItems }) => {
             </List>
           </>
         ) : (
-          <Typography>Click "Get Recipe Suggestion" to generate a recipe.</Typography>
+          <Typography>
+            Click "Get Recipe Suggestion" to generate a recipe.
+          </Typography>
         )}
       </DialogContent>
       <DialogActions>
