@@ -103,14 +103,14 @@ const GenerateRecipe = ({ open, onClose, inventoryItems }) => {
             <List dense>
               {recipe.steps.map((step, index) => (
                 <ListItem key={index}>
-                  <ListItemText primary={`${index + 1}. ${step}`} />
+                  <ListItemText primary={`${step}`} />
                 </ListItem>
               ))}
             </List>
           </>
         ) : (
           <Typography>
-            Click "Get Recipe Suggestion" to generate a recipe.
+            Click Get Recipe Suggestion to generate a recipe.
           </Typography>
         )}
       </DialogContent>
