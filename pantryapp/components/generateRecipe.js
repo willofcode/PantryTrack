@@ -9,6 +9,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  Checkbox,
   CircularProgress,
   Alert,
 } from '@mui/material';
@@ -17,18 +18,27 @@ const GenerateRecipe = ({ open, onClose, inventoryItems }) => {
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handleCheckboxChange = (item) => {
+    setSelectedItems((prevSelectedItems) =>
+      prevSelectedItems.includes(item)
+        ? prevSelectedItems.filter((i) => i !== item)
+        : [...prevSelectedItems, item]
+    );
+  };
 
   const getGenerateRecipe = async () => {
     setLoading(true);
     setError(null);
     try {
-      console.log('Sending request with ingredients:', inventoryItems);
+      console.log('Sending request with ingredients:', selectedItems);
       const response = await fetch('/api/suggestrecipe', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ingredients: inventoryItems }),
+        body: JSON.stringify({ ingredients: selectedItems }),
       });
       console.log('Response status:', response.status);
       console.log('Response headers:', Object.fromEntries(response.headers.entries()));
@@ -58,7 +68,12 @@ const GenerateRecipe = ({ open, onClose, inventoryItems }) => {
         </Typography>
         <List dense>
           {inventoryItems.map((item) => (
-            <ListItem key={item}>
+            <ListItem key={item} button onClick={() => handleCheckboxChange(item)}>
+              <Checkbox
+                checked={selectedItems.includes(item)}
+                onChange={() => handleCheckboxChange(item)}
+                color="primary"
+              />
               <ListItemText primary={item} />
             </ListItem>
           ))}

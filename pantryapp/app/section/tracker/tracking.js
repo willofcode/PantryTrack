@@ -23,10 +23,8 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import RestaurantIcon from "@mui/icons-material/Restaurant";
 import { Switch } from '@mui/material'
 import { firestore } from "@/firebase";
 import SearchIcon from "@mui/icons-material/Search";
@@ -156,12 +154,9 @@ export default function Dashboard() {
       await updateInventory(newItemName.trim(), itemQuantity, itemDate);
       setNewItemName('');
       {itemQuantity < 0 ? setItemQuantity(0): setItemQuantity('')};
-      {itemDate !== new Date().toISOString().split('T')[0] ? setItemDate('') : setItemDate(itemDate);};
+      {itemDate !== new Date().toISOString().split('T')[0] ? setItemDate('') : setItemDate(itemDate)};
       setOpenNewItemDialog(false);
     }
-    console.log("new item added", newItemName);
-    console.log("quantity added", itemQuantity);
-    console.log("date added", itemDate);
   };
 
   const handleSearchChange = (event) => {
@@ -187,7 +182,7 @@ export default function Dashboard() {
             <Typography
               variant="h4"
               component="h1"
-              sx={{ fontWeight: "bold", color: "primary.main" }}
+              sx={{ fontWeight: "bold", color: "primary.main", fontFamily: 'PT Sans' }}
             >
               Pantry Inventory
             </Typography>
@@ -423,13 +418,6 @@ export default function Dashboard() {
               </Button>
             </DialogActions>
           </Dialog>
-
-          {/* Recipe Suggestion Dialog */}
-          {/* <GenerateRecipe
-            open={openGenerateRecipe}
-            onClose={() => setOpenGenerateRecipe(false)}
-            inventoryItems={Object.keys(inventory)}
-          /> */}
         </Box>
       </Container>
     </ThemeProvider>

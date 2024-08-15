@@ -22,8 +22,7 @@ import {
 import GenerateRecipe from "@/components/generateRecipe";
 import { darkPalette, lightPalette, StyledButton} from "@/components/styledcomponents";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
+import AnalyticTable from "@/components/Analytictable";
 
 
 // const style = {
@@ -60,83 +59,36 @@ export default function AnalyticsPage() {
     const docs = await getDocs(snapshot)
     const inventoryData = [];
     docs.forEach((doc) => {
-      inventoryData.push({ name: doc.id, quantity: doc.data().quantity, date: doc.data().date })
-    })
-    setInventory(inventoryData)
+      const data = doc.data();
+      console.log('Raw date:', data.date); // Log the date to see its format
+  
+      let itemDate;
+      if (data.date && !isNaN(new Date(data.date).getTime())) {
+        itemDate = new Date(data.date).toISOString().split('T')[0];
+      } else {
+        console.warn('Invalid date format:', data.date);
+        itemDate = null; // or handle it appropriately
+      }
+  
+      inventoryData.push({
+        name: doc.id,
+        quantity: data.quantity,
+        date: itemDate, // Use the ISO formatted date
+      });
+    });
+  
+    setInventory(inventoryData);
   }
+  
+  console.log(inventory);
 
   useEffect(() => {
     fetchInventory()
   }, [])
 
-  const addNewItem = async (item) => {
-    const newItem = {
-      name: item,
-      quantity: Number(itemQuantity),
-      itemDate: itemDate
-    }
+  const names = Array.isArray(inventory) ? inventory.map(({ name }) => name) : [];
+  const quantities = Array.isArray(inventory) ? inventory.map(({ quantity }) => quantity) : [];
 
-    setInventory(prevInventory => {
-      const existingItem = prevInventory.find(i => i.name === item)
-      if (existingItem) {
-        return prevInventory.map(i => i.name === item
-          ? { ...i, quantity: i.quantity + newItem.quantity }
-          : i)
-      } else {
-        return [newItem, ...prevInventory]
-      }
-    })
-
-    const docRef = doc(collection(firestore, "pantry"), item)
-    const docSnap = await getDoc(docRef)
-    if (docSnap.exists()) {
-      const { quantity } = docSnap.data()
-      await setDoc(docRef, { ...newItem, quantity: quantity + newItem.quantity })
-    } else {
-      await setDoc(docRef, newItem)
-    }
-
-    await fetchInventory()
-  }
-
-  const increaseItemQuantityOptimistic = async (item) => {
-    setInventory(prevInventory => (
-      prevInventory.map(item => item.name === item ? { ...i, quantity: i.quantity + 1 } : i)
-    ))
-
-    const docRef = doc(collection(firestore, "pantry"), item)
-    const docSnap = await getDoc(docRef)
-    if (docSnap.exists()) {
-      const { quantity } = docSnap.data()
-      await setDoc(docRef, { quantity: quantity + 1 })
-    }
-
-    await fetchInventory()
-  }
-
-  const removeItemOptimistic = async (item) => {
-    setInventory(prevInventory => 
-      prevInventory
-        .map(i => i.name === item ? { ...i, quantity: i.quantity - 1 } : i)
-        .filter(i => i.quantity > 0)
-    )
-
-    const docRef = doc(collection(firestore, "pantry"), item)
-    const docSnap = await getDoc(docRef)
-    if (docSnap.exists()) {
-      const { quantity } = docSnap.data()
-      if (quantity === 1) {
-        await deleteDoc(docRef)
-      } else {
-        await setDoc(docRef, { quantity: quantity - 1 })
-      }
-    }
-
-    await fetchInventory()
-  }
-
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
 
   // Filter and Sort inventory based on search query, sort option, and order
   const filteredInventory = Object.values(inventory).filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase())).sort((a, b) => {
@@ -144,15 +96,13 @@ export default function AnalyticsPage() {
 
       if (sortOption === 'name') {
         if (a.name && b.name) {
-          console.log(a);
-          console.log(b);
           comparison = a.name.localeCompare(b.name);
         } else {
           comparison = 0
         } 
       } else if (sortOption === 'quantity') {
         comparison = a.quantity - b.quantity;
-      } else if (sortOption === 'itemDate') {
+      } else if (sortOption === 'date') {
         comparison = new Date(a.itemDate) - new Date(b.itemDate);
       }
 
@@ -195,7 +145,7 @@ export default function AnalyticsPage() {
             alignItems="center"
             mb={4}
           >
-            <Typography variant="h4" fontWeight="bold">
+            <Typography variant="h4" component="h1" fontWeight="bold" style={{ color: "#0096FF", fontFamily: 'PT Sans' }}>
               Analytics Dashboard
             </Typography>
             <TextField
@@ -236,7 +186,7 @@ export default function AnalyticsPage() {
                 >
                   <MenuItem value="name">Name</MenuItem>
                   <MenuItem value="quantity">Quantity</MenuItem>
-                  <MenuItem value="itemDate">Date</MenuItem>
+                  <MenuItem value="date">Date</MenuItem>
                 </Select>
               </FormControl>
 
@@ -263,7 +213,7 @@ export default function AnalyticsPage() {
                 startIcon={<RestaurantIcon />}
                 onClick={() => setOpenGenerateRecipe(true)}
               >
-                Suggest Recipe
+                Generate Recipe
               </StyledButton>
             </Box>
             
@@ -315,7 +265,6 @@ export default function AnalyticsPage() {
                   </AnimatedCard>
                 </Grid> */}
 
-                {/* Top Items Chart */}
                 <Grid item xs={12} md={10}>
                   <AnimatedCard
                     initial={{ opacity: 0, y: 20 }}
@@ -330,12 +279,12 @@ export default function AnalyticsPage() {
                         xAxis={[
                           {
                             scaleType: "band",
-                            data: Object.keys(inventory).slice(0, 5),
+                            data: names,
                           },
                         ]}
                         series={[
                           {
-                            data: Object.values(inventory).slice(0, 5),
+                            data: quantities,
                             color: customTheme.palette.primary.main,
                           },
                         ]}
@@ -346,77 +295,30 @@ export default function AnalyticsPage() {
                   </AnimatedCard>
                 </Grid>
               </Grid>
-
-          <Box 
-            component={Paper} 
-            border={'1px solid'} 
-            alignItems={"center"}
-            mt={2} >
-              <Grid container justifyContent={'space-evenly'} alignItems={"center"}>
-                <Grid item>
-                  <typography textAlign={'center'}>
-                    Item
-                  </typography>
-                </Grid>
-                <Grid item>
-                  <typography  textAlign={'center'}>
-                    Quantity
-                  </typography>
-                </Grid>
-                <Grid item>
-                  <typography textAlign={'center'}>
-                    Date added
-                  </typography>
-                </Grid>
-              </Grid>
-            <Stack height="400px" overflow={'auto'}>
-              {filteredInventory.map(({ name, quantity, itemDate }) => (
-                <Box
-                  key={name}
-                  width="100%"
-                  minHeight="80px"
-                  display={'flex'}
-                  justifyContent={'space-evenly'}
-                  alignItems={'center'}
-                  sx={{
-                    borderBottom: '1px solid #000000', // Add a border between rows
-                  }}
-                >
-                  <Grid container justifyContent={'center'} alignItems="center"> 
-                    <Grid item xs={4}>
-                      <Typography variant={'h6'} textAlign={'center'}>
-                        {name.charAt(0).toUpperCase() + name.slice(1)}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={4}>
-                      <Typography variant={'h6'} textAlign={'center'}>
-                        {quantity}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={4}>
-                      <Typography variant={'h6'} textAlign={'center'}>
-                        {itemDate || 'N/A'}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                  {/* <Box display="flex" gap={2}>
-                    <Button variant="contained" onClick={() => increaseItemQuantityOptimistic(name)}
-                      style={{ borderRadius: '50%' }}>
-                      <AddIcon/>
-                    </Button>
-                    <Button variant="contained" onClick={() => removeItemOptimistic(name)}
-                      style={{ borderRadius: '50%' }}>
-                      <RemoveIcon/>
-                    </Button>
-                  </Box> */}
-                </Box>
-              ))}
-            </Stack>
-          </Box>
+             <Grid 
+              item xs={12}  
+              overflow={"scroll"}
+              height={500}
+              >
+              <AnimatedCard
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <CardContent>
+                  {/* <Typography variant="h6" gutterBottom color="secondary.main">
+                    Inventory List
+                  </Typography> */}
+                    <AnalyticTable
+                      inventory={filteredInventory}
+                    />
+                </CardContent>
+              </AnimatedCard>
+            </Grid>
           <GenerateRecipe
             open={openGenerateRecipe}
             onClose={() => setOpenGenerateRecipe(false)}
-            inventoryItems={Object.keys(inventory)}
+            inventoryItems={names}
           />
           </Box>
           </Box>

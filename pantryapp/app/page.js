@@ -72,7 +72,7 @@ export default function Home() {
                 justifyContent='center'
                 color="white"
                 align="center"
-                fontFamily='Inter'
+                fontFamily='PT Sans'
                 fontWeight="bold"
                 animation="animatedText"
               >
@@ -86,6 +86,7 @@ export default function Home() {
                 sx={{
                   position: 'relative',
                   paddingBottom: 2,
+                  fontFamily: 'PT Sans',
                 }}
               >
                 <Link href="/section/tracker" passHref>
@@ -104,7 +105,7 @@ export default function Home() {
                   </Button>
                 </Link>
               </Stack>{' '}
-              <Typography variant="h6" marginBottom={5} color="white" direction="row" align='center'>
+              <Typography variant="h6" fontFamily='PT Sans' marginBottom={5} color="white" direction="row" align='center'>
                 Track your pantry inventory seamlessly and efficiently with AI powered tools at your fingertips!
               </Typography>
               <Box marginTop={40} color="white" direction="row" align='center'>
