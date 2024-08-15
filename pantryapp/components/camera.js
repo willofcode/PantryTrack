@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Camera } from 'react-camera-pro';
 import { Button, Box, Typography, TextField, Input } from '@mui/material';
+import Image from 'next/image';
 // import axios from 'axios';
 
 const CameraComponent = ({ onDetection, inventoryItems, mode }) => {
@@ -68,7 +69,7 @@ const CameraComponent = ({ onDetection, inventoryItems, mode }) => {
       </Button>
       {image && (
         <Box borderRadius={60} mt={2}>
-          <img src={image} alt="Captured" style={{ maxWidth: '100%' }} />
+          <Image src={image} alt="Captured" style={{ maxWidth: '100%' }} />
         </Box>
       )}
       {error && (
