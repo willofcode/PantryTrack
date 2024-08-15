@@ -95,7 +95,7 @@ export default function AnalyticsPage() {
       } else if (sortOption === 'quantity') {
         comparison = a.quantity - b.quantity;
       } else if (sortOption === 'date') {
-        comparison = new Date(a.itemDate) - new Date(b.itemDate);
+        comparison = new Date(a.date) - new Date(b.date);
       }
 
       return sortOrder === 'asc' ? comparison : -comparison
@@ -264,8 +264,8 @@ export default function AnalyticsPage() {
                     transition={{ duration: 0.5, delay: 0.2 }}
                   >
                     <CardContent>
-                      <Typography variant="h6" gutterBottom color="primary.main">
-                        Inventory Overview
+                      <Typography variant="h6" gutterBottom color="primary.main" style={{ fontFamily: 'PT Sans' }}>
+                        Pantry Inventory Overview
                       </Typography>
                       <BarChart
                         xAxis={[

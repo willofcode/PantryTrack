@@ -25,7 +25,7 @@ export async function POST(request) {
         {
           role: "user",
           content: [
-            { type: "text", text: `Which food item ingredient is in this image shown or what am I holding in the hand? If it's one of these items: ${inventoryItems.join(', ')}, respond with that item name. If the food item ingredient is not in the list, respond with the name of the food item ingredient. If its not a fruit or vegetable, respond with none` },
+            { type: "text", text: `Which food item ingredient is in this image shown or what am I holding in the hand? If it's one of these items: ${inventoryItems.join(', ')}, respond with exactly just the item name. If the food item ingredient is not in the list, respond with the name of the food item ingredient` },
             { type: "image_url", image_url: { url: image } }
           ],
         },
@@ -37,7 +37,7 @@ export async function POST(request) {
     const detectedObject = response.choices[0].message.content.toLowerCase().trim();
     return NextResponse.json({ detectedObject });
   } catch (error) {
-    console.error('Error in object-detection API route:', error);
+    console.error('Error in API route:', error);
     return NextResponse.json(
       { error: 'An error occurred during object detection', details: error.message },
       { status: 500 }

@@ -108,7 +108,7 @@ export default function Home() {
               <Typography variant="h6" fontFamily='PT Sans' marginBottom={5} color="white" direction="row" align='center'>
                 Track your pantry inventory seamlessly and efficiently with AI powered tools at your fingertips!
               </Typography>
-              <Box marginTop={40} color="white" direction="row" align='center'>
+              <Box marginTop={typeof window !== 'undefined' && window.innerWidth > 1200 && window.innerHeight > 800 ? 60 : 40} color="white" direction="row" align='center'>
                 <Copyright sx={{ bottom: 0 }} />
               </Box>
             </Box>

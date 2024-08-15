@@ -27,13 +27,13 @@ const AnalyticTable = ({inventory}) => {
         <TableBody  overflow={'scroll'} spacing={2}>
           {inventory.map(({name, quantity, date}) => (
             <TableRow key={name}>
-              <TableCell component="th" scope="row" sx={{ textAlign: 'center', px: 5 }}>
+              <TableCell component="th" scope="row" sx={{ textAlign: 'center', px: 3 }}>
                 {name.charAt(0).toUpperCase() + name.slice(1)}
               </TableCell>
-              <TableCell sx={{ textAlign: 'center', px: 5 }}>
+              <TableCell sx={{ textAlign: 'center', px: 3 }}>
                 {quantity}
               </TableCell>
-              <TableCell sx={{ textAlign: 'center', px: 5 }}>
+              <TableCell sx={{ textAlign: 'center', px: 3 }}>
                 {date || 'N/A'}
               </TableCell>
             </TableRow>

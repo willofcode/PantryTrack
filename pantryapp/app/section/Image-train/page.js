@@ -45,7 +45,7 @@ export default function Home() {
             justifyContent={'space-between'}
             gap={2}
             >
-            <Container>
+            <Container height={'500px'}>
                 <Head>
                     <Typography
                         variant="h2"

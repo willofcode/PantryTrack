@@ -61,9 +61,9 @@ const GenerateRecipe = ({ open, onClose, inventoryItems }) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>Recipe Suggestion</DialogTitle>
+      <DialogTitle variant={'h'} style={{ fontFamily: 'PT Sans' }}>Recipe Generator</DialogTitle>
       <DialogContent>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h6" style={{ fontFamily: 'PT Sans' }} gutterBottom>
           Available Ingredients:
         </Typography>
         <List dense>
@@ -84,10 +84,10 @@ const GenerateRecipe = ({ open, onClose, inventoryItems }) => {
           <Alert severity="error">{error}</Alert>
         ) : recipe ? (
           <>
-            <Typography variant="h6" gutterBottom>
-              Suggested Recipe: {recipe.name}
+            <Typography variant="h6" style={{ fontFamily: 'PT Sans', fontWeight: 'bold' }} gutterBottom>
+              {recipe.name}
             </Typography>
-            <Typography variant="subtitle1" gutterBottom>
+            <Typography variant="subtitle1" style={{ fontFamily: 'PT Sans', fontWeight: 'bold' }} gutterBottom>
               Ingredients:
             </Typography>
             <List dense>
@@ -97,8 +97,8 @@ const GenerateRecipe = ({ open, onClose, inventoryItems }) => {
                 </ListItem>
               ))}
             </List>
-            <Typography variant="subtitle1" gutterBottom>
-              Steps:
+            <Typography variant="subtitle1" style={{ fontFamily: 'PT Sans', fontWeight: 'bold' }} gutterBottom>
+              Instructions:
             </Typography>
             <List dense>
               {recipe.steps.map((step, index) => (

@@ -229,7 +229,7 @@ export default function Dashboard() {
                 setOpenCamera(true);
               }}
             >
-              Add to Inventory
+              Camera Add
             </StyledButton>
             <StyledButton
               variant="contained"
@@ -241,7 +241,7 @@ export default function Dashboard() {
                 setOpenCamera(true);
               }}
             >
-              Remove from Inventory
+              Camera Remove
             </StyledButton>
             <StyledButton
               variant="outlined"
@@ -306,7 +306,7 @@ export default function Dashboard() {
                 alignItems: "center",
               }}
             >
-              Capture Image
+              AI Object Detection
               <IconButton onClick={() => setOpenCamera(false)}>
                 <CloseIcon />
               </IconButton>

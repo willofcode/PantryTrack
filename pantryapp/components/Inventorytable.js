@@ -24,10 +24,10 @@ const InventoryTable = ({ inventory, add, remove, DeleteConfirmation}) => {
         <TableBody  overflow={'scroll'} spacing={2}>
           {inventory.map(([name, quantity]) => (
             <TableRow key={name}>
-              <TableCell component="th" scope="row" sx={{ textAlign: 'center', px: 5 }}>
+              <TableCell component="th" scope="row" sx={{ textAlign: 'center', px: 3 }}>
                 {name.charAt(0).toUpperCase() + name.slice(1)}
               </TableCell>
-              <TableCell sx={{ textAlign: 'center', px: 5 }}>{quantity}</TableCell>
+              <TableCell sx={{ textAlign: 'center', px: 3 }}>{quantity}</TableCell>
               <TableCell sx={{ textAlign: 'center' }}>
                 <ActionButton sx={{ borderRadius: '80%' }} onClick={() => add(name, 1)}><AddIcon/></ActionButton>
                 <ActionButton sx={{ borderRadius: '80%' }} onClick={() => remove(name, -1)}><RemoveIcon/></ActionButton>
