@@ -33,7 +33,7 @@ const GenerateRecipe = ({ open, onClose, inventoryItems }) => {
     setError(null);
     try {
       console.log('Sending request with ingredients:', selectedItems);
-      const response = await fetch('/api/suggestrecipe', {
+      const response = await fetch('/api/recipe-generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
