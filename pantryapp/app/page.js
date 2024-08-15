@@ -76,7 +76,7 @@ export default function Home() {
                 fontWeight="bold"
                 animation="animatedText"
               >
-                Pantry Track
+                Pantry Track AI
               </Typography>
               <Stack
                 direction="row"

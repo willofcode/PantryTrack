@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { Camera } from 'react-camera-pro';
-import { Button, Box, Typography, Input } from '@mui/material';
+import { Camera, switchCamera } from 'react-camera-pro';
+import { Button, Box, Typography, Input, Switch } from '@mui/material';
 import axios from 'axios';
 
 const CameraComponent = ({ onDetection, inventoryItems, mode }) => {
@@ -57,6 +57,13 @@ const CameraComponent = ({ onDetection, inventoryItems, mode }) => {
       borderRadius={60} 
       sx={{ width: '100%', maxWidth: '400px', margin: '0 auto' 
       }}>
+      <Switch
+        checked={camera?.current?.switchCamera('user')}
+        onChange={() => camera?.current?.switchCamera('environment')}
+        color="default"
+        inputProps={{ 'aria-label': 'toggle camera' }}
+        sx={{ mt: 2 }}
+      />
       <Box borderRadius={60} sx={{ position: 'relative', paddingTop: '75%', overflow: 'hidden' }}>
         <Camera borderRadius={60}  ref={camera} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
       </Box>
