@@ -107,11 +107,11 @@ export default function Dashboard() {
   const updateInventory = async (item, change) => {
     const newQuantity = Math.max(0, (inventory[item] || 0) + change);
     const itemRef = doc(collection(firestore, "pantry"), item);
-
     if (inventory[item] === undefined) {
       await setDoc(itemRef, { quantity: newQuantity, date: itemDate});
-    } else {
-      await updateDoc(itemRef, { quantity: newQuantity, date: itemDate});
+    } 
+    else {
+      await updateDoc(itemRef, { quantity: newQuantity});
     }
 
     setInventory((prev) => ({
@@ -136,12 +136,16 @@ export default function Dashboard() {
 
   const handleDetection = async (detectedObject) => {
     setOpenCamera(false);
+    const today = setItemDate(new Date());
     if (detectedObject !== 'none') {
       if (cameraMode === 'add_new') {
-        await updateInventory(detectedObject, 1);
+        await updateInventory(detectedObject, 1, itemDate);
         setOpenNewItemDialog(false);
+        setItemDate(new Date());
+        console.log("date", itemDate)
       } else {
-        await updateInventory(detectedObject, action === 'in' ? 1 : -1);
+        await updateInventory(detectedObject, action === 'in' ? 1 : -1, itemDate);
+        setItemDate(new Date());
       }
     } else {
       alert('No valid object detected');
@@ -153,7 +157,7 @@ export default function Dashboard() {
       await updateInventory(newItemName.trim(), itemQuantity, itemDate);
       setNewItemName('');
       {itemQuantity < 0 ? setItemQuantity(0): setItemQuantity('')};
-      {itemDate !== new Date().toISOString().split('T')[0] ? setItemDate('') : setItemDate(itemDate.toLocaleDateString())};
+      setItemDate('');
       setOpenNewItemDialog(false);
     }
     console.log("date", itemDate)

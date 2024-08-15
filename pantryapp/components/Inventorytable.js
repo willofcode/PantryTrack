@@ -6,7 +6,6 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const InventoryTable = ({ inventory, add, remove, DeleteConfirmation}) => {
-  
   return (
     <StyledTableContainer component={Paper}>
       <Table
@@ -29,8 +28,8 @@ const InventoryTable = ({ inventory, add, remove, DeleteConfirmation}) => {
               </TableCell>
               <TableCell sx={{ textAlign: 'center', px: 3 }}>{quantity}</TableCell>
               <TableCell sx={{ textAlign: 'center' }}>
-                <ActionButton sx={{ borderRadius: '80%' }} onClick={() => add(name, 1)}><AddIcon/></ActionButton>
-                <ActionButton sx={{ borderRadius: '80%' }} onClick={() => remove(name, -1)}><RemoveIcon/></ActionButton>
+                <ActionButton sx={{ borderRadius: '80%' }} onClick={() => add(name, 1, new Date())}><AddIcon/></ActionButton>
+                <ActionButton sx={{ borderRadius: '80%' }} onClick={() => remove(name, -1, new Date())}><RemoveIcon/></ActionButton>
                 <ActionButton sx={{ borderRadius: '80%' }} onClick={() => DeleteConfirmation(name)}><DeleteIcon /></ActionButton>
               </TableCell>
             </TableRow>

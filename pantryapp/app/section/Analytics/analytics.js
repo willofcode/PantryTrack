@@ -17,7 +17,7 @@ import {
 } from 'firebase/firestore';
 import GenerateRecipe from "@/components/generateRecipe";
 import { darkPalette, lightPalette, StyledButton} from "@/components/styledcomponents";
-import RestaurantIcon from "@mui/icons-material/Restaurant";
+import LocalDiningIcon from "@mui/icons-material/LocalDining";
 import AnalyticTable from "@/components/Analytictable";
 
 
@@ -53,13 +53,11 @@ export default function AnalyticsPage() {
     const inventoryData = [];
     docs.forEach((doc) => {
       const data = doc.data();
-      console.log('Raw date:', data.date); // Log the date to see its format
   
       let itemDate;
       if (data.date && !isNaN(new Date(data.date).getTime())) {
         itemDate = new Date(data.date).toISOString().split('T')[0];
       } else {
-        console.warn('Invalid date format:', data.date);
         itemDate = null;
       }
   
@@ -72,8 +70,6 @@ export default function AnalyticsPage() {
   
     setInventory(inventoryData);
   }
-  
-  console.log(inventory);
 
   useEffect(() => {
     fetchInventory()
@@ -202,7 +198,7 @@ export default function AnalyticsPage() {
               <StyledButton
                 variant="outlined"
                 color="primary"
-                startIcon={<RestaurantIcon />}
+                startIcon={<LocalDiningIcon />}
                 onClick={() => setOpenGenerateRecipe(true)}
               >
                 Generate Recipe
