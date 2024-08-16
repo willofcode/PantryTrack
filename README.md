@@ -1,4 +1,4 @@
-# PantryTrack
+# Pantry Track AI
 # AI-Powered Pantry Management System
 
 ## Project Overview
