@@ -132,20 +132,18 @@ export default function Dashboard() {
     });
     setDeleteConfirmation("");
   };
-  
 
   const handleDetection = async (detectedObject) => {
     setOpenCamera(false);
-    const today = setItemDate(new Date());
+    var today = new Date().toISOString().slice(0, 10);
+    setItemDate(today);
     if (detectedObject !== 'none') {
       if (cameraMode === 'add_new') {
         await updateInventory(detectedObject, 1, itemDate);
         setOpenNewItemDialog(false);
-        setItemDate(new Date());
-        console.log("date", itemDate)
       } else {
         await updateInventory(detectedObject, action === 'in' ? 1 : -1, itemDate);
-        setItemDate(new Date());
+        setItemDate(today.toString());
       }
     } else {
       alert('No valid object detected');
