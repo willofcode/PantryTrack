@@ -7,7 +7,7 @@ An AI-powered Pantry Management System for food items, developed to further enha
 
 The current tech stack that made this project possible: Material UI, JavaScript, NextJS, OpenAI API, & framer motion.
 
-![Dashboard Screenshot]()
+![Landingpage Screenshot](https://github.com/willofcode/PantryTrack/blob/main/landingpage.png)
 
 ## Features
 
