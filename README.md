@@ -5,6 +5,8 @@
 
 An AI-powered Pantry Management System for food items, developed to further enhance my understanding of machine learning Material UI, and OpenAI API. It features real-time pantry tracking, AI-powered image processing capabilities for adding items, and an AI recipe generator based on available ingredients.
 
+The current tech stack that made this project possible: Material UI, JavaScript, NextJS, OpenAI API, & framer motion.
+
 ![Dashboard Screenshot]()
 
 ## Features
