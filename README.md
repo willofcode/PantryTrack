@@ -20,7 +20,7 @@ The current tech stack that made this project possible: Material UI, JavaScript,
 
 ##  Demo
 
-Check out the live demo deployed on Vercel: 
+Check out the live demo (https://www.youtube.com/watch?v=YVwngSL6opk)
 
 ## Project Guide
 
