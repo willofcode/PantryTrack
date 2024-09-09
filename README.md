@@ -16,6 +16,7 @@ The current tech stack that made this project possible: Material UI, JavaScript,
 - AI-Recipe generator based on selected ingredients
 - Search functionality for pantry lookup with sorting capabilities
 - Mobile and web responsive
+- individual account (WIP)
 
 
 ##  Demo
